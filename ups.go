@@ -2,9 +2,9 @@ package nut
 
 import (
 	"fmt"
+	"regexp"
 	"strconv"
 	"strings"
-	"regexp"
 )
 
 // UPS contains information about a specific UPS provided by the NUT instance.
@@ -185,6 +185,16 @@ func (u *UPS) GetVariables() ([]Variable, error) {
 	}
 	u.Variables = vars
 	return vars, nil
+}
+
+func (u *UPS) GetVariable(variableName string) (string, error) {
+	resp, err := u.nutClient.SendCommand(fmt.Sprintf("GET VAR %s %s", u.Name, variableName))
+	if err != nil {
+		return "", err
+	}
+	trimmedLine := strings.TrimPrefix(resp[0], fmt.Sprintf("VAR %s %s ", u.Name, variableName))
+	value := strings.Replace(trimmedLine, `"`, "", -1)
+	return value, nil
 }
 
 // GetVariableDescription returns a string that gives a brief explanation for the given variableName.
