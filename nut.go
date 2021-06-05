@@ -19,14 +19,14 @@ type Client struct {
 }
 
 // Connect accepts a hostname/IP string and creates a connection to NUT, returning a Client.
-func Connect(hostname string) (Client, error) {
+func Connect(hostname string) (*Client, error) {
 	tcpAddr, err := net.ResolveTCPAddr("tcp", fmt.Sprintf("%s:3493", hostname))
 	if err != nil {
-		return Client{}, err
+		return nil, err
 	}
 	conn, err := net.DialTCP("tcp", nil, tcpAddr)
 	if err != nil {
-		return Client{}, err
+		return nil, err
 	}
 	client := Client{
 		Hostname: conn.RemoteAddr(),
@@ -34,7 +34,7 @@ func Connect(hostname string) (Client, error) {
 	}
 	client.GetVersion()
 	client.GetNetworkProtocolVersion()
-	return client, nil
+	return &client, nil
 }
 
 // Disconnect gracefully disconnects from NUT by sending the LOGOUT command.
