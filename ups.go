@@ -187,6 +187,7 @@ func (u *UPS) GetVariables() ([]Variable, error) {
 	return vars, nil
 }
 
+// GetVariable returns string value of variable "variableName"
 func (u *UPS) GetVariable(variableName string) (string, error) {
 	resp, err := u.nutClient.SendCommand(fmt.Sprintf("GET VAR %s %s", u.Name, variableName))
 	if err != nil {
